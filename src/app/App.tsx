@@ -1,11 +1,11 @@
-import { ChakraProvider, Text } from "@chakra-ui/react";
+import { AppRouter } from "@/app/router";
+import { Providers } from "@/app/providers";
 
 function App() {
-  const sdljaslkdj = "fskljflsjdflksdj";
   return (
-    <ChakraProvider>
-      <Text fontWeight={700}>THIS IS CHAKRA</Text>
-    </ChakraProvider>
+    <Providers>
+      <AppRouter />
+    </Providers>
   );
 }
 
