@@ -1,20 +1,22 @@
 import { forwardRef, useRef } from "react";
-import { Box, Spinner, Text } from "@chakra-ui/react";
+import { Box, Center, Spinner, Text } from "@chakra-ui/react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { removeScrollBarStyles } from "@/shared/utils/removeScrollBarStyles.ts";
 import { InfinityQueryResultType } from "@/shared/types/comments/getCommentsTypes.ts";
 import { CommentCard } from "@/entities/comment/ui";
+import { FullSizeSpinner } from "@/shared/ui/spinner";
 
 type CommentsVirtualizedListProps = {
   comments: InfinityQueryResultType | undefined;
   hasNextPage: boolean;
   isFetchingNextPage: boolean;
+  isLoading: boolean;
 };
 
 export const CommentsVirtualizedList = forwardRef<
   HTMLDivElement,
   CommentsVirtualizedListProps
->(({ comments, isFetchingNextPage, hasNextPage }, ref) => {
+>(({ comments, isFetchingNextPage, hasNextPage, isLoading }, ref) => {
   const parentRef = useRef<HTMLDivElement>(null);
 
   const allComments = comments?.pages.flatMap((page) => page.comments) || [];
@@ -38,25 +40,31 @@ export const CommentsVirtualizedList = forwardRef<
       css={removeScrollBarStyles}
       p={4}
     >
-      <Box
-        style={{
-          height: `${rowVirtualizer.getTotalSize()}px`,
-          position: "relative",
-          width: "100%",
-        }}
-      >
-        {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-          const comment = allComments[virtualRow.index];
+      {!isLoading ? (
+        <Box
+          style={{
+            height: `${rowVirtualizer.getTotalSize()}px`,
+            position: "relative",
+            width: "100%",
+          }}
+        >
+          {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+            const comment = allComments[virtualRow.index];
 
-          return (
-            <CommentCard
-              key={virtualRow.key}
-              comment={comment}
-              virtualRow={virtualRow}
-            />
-          );
-        })}
-      </Box>
+            return (
+              <CommentCard
+                key={virtualRow.key}
+                comment={comment}
+                virtualRow={virtualRow}
+              />
+            );
+          })}
+        </Box>
+      ) : (
+        <Center h="full">
+          <FullSizeSpinner />
+        </Center>
+      )}
 
       {hasNextPage && <Box ref={ref} height="20px" />}
       {isFetchingNextPage && (
