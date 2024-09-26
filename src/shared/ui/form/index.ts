@@ -10,5 +10,5 @@ import FormSubmitButton, {
 export const createInputList = <FV extends FieldValues>() => ({
   FormInput: Input as FC<InputFormProps<FV>>,
   FormTextarea: FormTextarea as FC<TextAreaFormProps<FV>>,
-  FormSubmitButton: FormSubmitButton as FC<FormSubmitButtonProps<FC>>,
+  FormSubmitButton: FormSubmitButton as FC<FormSubmitButtonProps<FV>>,
 });

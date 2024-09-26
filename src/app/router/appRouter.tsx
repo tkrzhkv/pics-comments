@@ -1,12 +1,11 @@
 import { Route, Routes } from "react-router-dom";
 import { SuspenseLayout } from "@/shared/ui/layouts";
 import { RouteDescription, RouteNames } from "@/shared/config/routes";
-
-const { LOGIN, HOME } = RouteNames;
-
 import { NotFoundPage } from "@/pages/notFoundPage/ui";
 import { LoginPage } from "@/pages/login/ui";
 import { HomePage } from "@/pages/home/ui/HomePage.tsx";
+
+const { LOGIN, HOME } = RouteNames;
 
 const routes: RouteDescription[] = [
   {

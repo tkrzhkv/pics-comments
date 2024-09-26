@@ -1,5 +1,5 @@
 import { forwardRef, useRef } from "react";
-import { Box, Text, Spinner } from "@chakra-ui/react";
+import { Box, Spinner, Text } from "@chakra-ui/react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { removeScrollBarStyles } from "@/shared/utils/removeScrollBarStyles.ts";
 import { InfinityQueryResultType } from "@/shared/types/comments/getCommentsTypes.ts";
@@ -30,7 +30,7 @@ export const CommentsVirtualizedList = forwardRef<
     <Box
       ref={parentRef}
       width="60vw"
-      height="80vh"
+      height="50vh"
       overflowY="auto"
       borderWidth="1px"
       borderRadius="md"
