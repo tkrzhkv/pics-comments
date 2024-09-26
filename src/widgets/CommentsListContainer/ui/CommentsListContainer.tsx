@@ -4,7 +4,6 @@ import { useCallback, useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { Heading, useToast, VStack } from "@chakra-ui/react";
 import { CommentsVirtualizedList } from "@/widgets/CommentsVirtualizedList";
-import { FullSizeSpinner } from "@/shared/ui/spinner";
 
 export function CommentsListContainer() {
   const toast = useToast();
@@ -33,16 +32,13 @@ export function CommentsListContainer() {
         Check, write, update, remove your comments...
       </Heading>
 
-      {!isLoading ? (
-        <CommentsVirtualizedList
-          hasNextPage={hasNextPage}
-          ref={ref}
-          isFetchingNextPage={isFetchingNextPage}
-          comments={data}
-        />
-      ) : (
-        <FullSizeSpinner />
-      )}
+      <CommentsVirtualizedList
+        hasNextPage={hasNextPage}
+        ref={ref}
+        isFetchingNextPage={isFetchingNextPage}
+        comments={data}
+        isLoading={isLoading}
+      />
     </VStack>
   );
 }
