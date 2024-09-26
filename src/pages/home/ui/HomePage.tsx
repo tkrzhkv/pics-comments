@@ -1,9 +1,5 @@
-import { Box, Text } from "@chakra-ui/react";
+import { CommentsListContainer } from "@/widgets/CommentsListContainer";
 
 export const HomePage = () => {
-  return (
-    <Box>
-      <Text>HOME</Text>
-    </Box>
-  );
+  return <CommentsListContainer />;
 };

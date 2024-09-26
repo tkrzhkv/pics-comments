@@ -1,5 +1,5 @@
 import { Box, Text } from "@chakra-ui/react";
-import { FormProvider, useForm, useWatch } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { createInputList } from "@/shared/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -26,19 +26,12 @@ export const LoginPage = () => {
 
   const { control } = methods;
 
-  const textW = useWatch({
-    control,
-    name: "text",
-  });
-
-  console.log(textW, "textW");
-
   return (
     <Box>
       <Text>LOGIN</Text>
       <FormProvider {...methods}>
         <form>
-          <FormInput name="text" control={methods.control} />
+          <FormInput name="text" control={control} />
         </form>
       </FormProvider>
     </Box>
