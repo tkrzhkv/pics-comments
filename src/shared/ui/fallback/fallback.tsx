@@ -1,6 +1,6 @@
 import { Link, useRouteError } from "react-router-dom";
 import { RejectedDataType } from "@/shared/types";
-import { Alert, Heading } from "@chakra-ui/react";
+import { Alert, Heading, Text } from "@chakra-ui/react";
 
 export const Fallback = () => {
   const error = useRouteError();

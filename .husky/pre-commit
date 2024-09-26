@@ -3,4 +3,5 @@
 
 pnpm lint-staged
 pnpm vitest --run
+pnpm ts:check
 
