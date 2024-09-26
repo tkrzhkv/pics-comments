@@ -17,6 +17,8 @@ export type TextAreaFormProps<
   type?: string;
   placeholder?: string;
   disabled?: boolean;
+  width?: string;
+  maxW?: string;
 } & FormControlProps;
 
 export const FormTextarea = <
@@ -25,7 +27,7 @@ export const FormTextarea = <
 >(
   props: TextAreaFormProps<TFieldValues, TName>,
 ) => {
-  const { control, name, disabled, required, placeholder } = props;
+  const { control, name, disabled, required, placeholder, width, maxW } = props;
   const { field } = useController({
     name,
     control,
@@ -34,6 +36,8 @@ export const FormTextarea = <
 
   return (
     <Textarea
+      width={width}
+      maxW={maxW}
       border="1px solid #C3CAD6"
       {...field}
       value={field.value || ""}

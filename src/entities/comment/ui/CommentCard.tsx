@@ -2,7 +2,7 @@ import { HStack, Text, VStack } from "@chakra-ui/react";
 import { FC } from "react";
 import { Comment } from "@/shared/types/comments/getCommentsTypes.ts";
 import { VirtualItem } from "@tanstack/react-virtual";
-import { DeleteButton } from "@/shared/ui/buttons/DeleteButton.tsx";
+import { DeleteButton } from "@/shared/ui/buttons/delete";
 
 type CommentCardProps = {
   comment: Comment;

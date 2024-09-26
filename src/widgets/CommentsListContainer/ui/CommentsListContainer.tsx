@@ -4,10 +4,11 @@ import { useCallback, useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { Heading, useToast, VStack } from "@chakra-ui/react";
 import { CommentsVirtualizedList } from "@/widgets/CommentsVirtualizedList";
+import { FullSizeSpinner } from "@/shared/ui/spinner";
 
 export function CommentsListContainer() {
   const toast = useToast();
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteCommentsRetrieve();
 
   const { ref, inView } = useInView();
@@ -31,12 +32,17 @@ export function CommentsListContainer() {
       <Heading color="blue.300" py={8}>
         Check, write, update, remove your comments...
       </Heading>
-      <CommentsVirtualizedList
-        hasNextPage={hasNextPage}
-        ref={ref}
-        isFetchingNextPage={isFetchingNextPage}
-        comments={data}
-      />
+
+      {!isLoading ? (
+        <CommentsVirtualizedList
+          hasNextPage={hasNextPage}
+          ref={ref}
+          isFetchingNextPage={isFetchingNextPage}
+          comments={data}
+        />
+      ) : (
+        <FullSizeSpinner />
+      )}
     </VStack>
   );
 }
