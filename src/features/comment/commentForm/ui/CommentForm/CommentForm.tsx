@@ -6,7 +6,7 @@ import {
 } from "@/features/comment/commentForm/model/schema.ts";
 import { createInputList } from "@/shared/ui/form";
 import { useQueryClient } from "@tanstack/react-query";
-import { Heading, useToast, VStack } from "@chakra-ui/react";
+import { Box, useToast, VStack } from "@chakra-ui/react";
 import { usePostComment } from "@/features/comment/createComment/api/usePostComment.ts";
 import { handleMutationError } from "@/shared/utils/handleMutationError.ts";
 
@@ -31,7 +31,7 @@ export const CommentForm = () => {
 
   const onSubmit: SubmitHandler<CommentSchemaType> = (data) => {
     createPost(
-      { body: data.comment, postId: 2, userId: 1 },
+      { body: data.comment ?? "", postId: 2, userId: 1 },
       {
         onSuccess: async () => {
           await queryClient.invalidateQueries({ queryKey: ["comments"] });
@@ -53,13 +53,21 @@ export const CommentForm = () => {
     <FormProvider {...methods}>
       <form style={{ width: "100%" }} onSubmit={handleSubmit(onSubmit)}>
         <VStack w="full">
-          <Heading color="blue.300">Enter your comment!</Heading>
-          <FormTextarea w="full" maxW="60vw" control={control} name="comment" />
-          <FormSubmitButton
-            name="Submit"
-            formState={formState}
-            isLoading={isPending}
+          <FormTextarea
+            error={formState.errors.comment?.message}
+            w="full"
+            maxW="60vw"
+            control={control}
+            name="comment"
           />
+          <Box pt={5}>
+            <FormSubmitButton
+              w="250px"
+              name="Submit"
+              formState={formState}
+              isLoading={isPending}
+            />
+          </Box>
         </VStack>
       </form>
     </FormProvider>

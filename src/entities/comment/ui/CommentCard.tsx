@@ -7,8 +7,13 @@ import { DeleteButton } from "@/shared/ui/buttons/delete";
 type CommentCardProps = {
   comment: Comment;
   virtualRow: VirtualItem;
+  removeComment: (id: number) => void;
 };
-export const CommentCard: FC<CommentCardProps> = ({ comment, virtualRow }) => {
+export const CommentCard: FC<CommentCardProps> = ({
+  comment,
+  virtualRow,
+  removeComment,
+}) => {
   return (
     <HStack
       style={{
@@ -30,7 +35,7 @@ export const CommentCard: FC<CommentCardProps> = ({ comment, virtualRow }) => {
       </VStack>
       <DeleteButton
         onClick={() => {
-          console.log(comment.id);
+          removeComment(comment.id);
         }}
       />
     </HStack>

@@ -13,7 +13,7 @@ const FormSubmitButton = <FV extends FieldValues>({
   isLoading,
   ...props
 }: FormSubmitButtonProps<FV>) => {
-  const { isSubmitting, isValid } = formState;
+  const { isSubmitting, isValid, isDirty } = formState;
 
   return (
     <Button
@@ -25,9 +25,9 @@ const FormSubmitButton = <FV extends FieldValues>({
         color: "gray.300",
         cursor: "not-allowed",
       }}
-      color="black"
+      color="white"
       isLoading={isLoading || isSubmitting}
-      isDisabled={isSubmitting || !isValid}
+      isDisabled={isSubmitting || !isValid || !isDirty}
       {...props}
     >
       {name}
