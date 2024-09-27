@@ -29,5 +29,16 @@ export const useInfiniteCommentsRetrieve = (): UseInfiniteQueryResult<
       return nextSkip < total ? nextSkip : undefined;
     },
     initialPageParam: 0,
+    placeholderData: {
+      pages: [
+        {
+          comments: [],
+          total: 0,
+          skip: 0,
+          limit: 30,
+        },
+      ],
+      pageParams: [],
+    },
   });
 };
