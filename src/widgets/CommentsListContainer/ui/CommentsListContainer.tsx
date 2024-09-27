@@ -33,6 +33,7 @@ export function CommentsListContainer() {
       </Heading>
 
       <CommentsVirtualizedList
+        data-testid="comments-virtualized-list"
         hasNextPage={hasNextPage}
         ref={ref}
         isFetchingNextPage={isFetchingNextPage}

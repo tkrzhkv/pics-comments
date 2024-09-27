@@ -39,12 +39,6 @@ export const CommentsVirtualizedList = forwardRef<
 
   const allComments = comments?.pages.flatMap((page) => page.comments) || [];
 
-  useEffect(() => {
-    if (parentRef.current) {
-      parentRef.current.scrollTop = scrollPosition;
-    }
-  }, [scrollPosition]);
-
   const { mutate: removeComment } = useDeleteComment();
 
   const deleteConfirmation = useConfirmation((id) => {
