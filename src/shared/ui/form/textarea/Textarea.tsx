@@ -4,7 +4,13 @@ import {
   FieldValues,
   useController,
 } from "react-hook-form";
-import { FormControlProps, Textarea } from "@chakra-ui/react";
+import {
+  FormControl,
+  FormControlProps,
+  FormErrorMessage,
+  FormLabel,
+  Textarea,
+} from "@chakra-ui/react";
 
 export type TextAreaFormProps<
   TFieldValues extends FieldValues = FieldValues,
@@ -19,6 +25,7 @@ export type TextAreaFormProps<
   disabled?: boolean;
   width?: string;
   maxW?: string;
+  error?: string;
 } & FormControlProps;
 
 export const FormTextarea = <
@@ -27,7 +34,18 @@ export const FormTextarea = <
 >(
   props: TextAreaFormProps<TFieldValues, TName>,
 ) => {
-  const { control, name, disabled, required, placeholder, width, maxW } = props;
+  const {
+    control,
+    name,
+    disabled,
+    required,
+    placeholder,
+    width,
+    maxW,
+    label,
+    error,
+  } = props;
+
   const { field } = useController({
     name,
     control,
@@ -35,14 +53,17 @@ export const FormTextarea = <
   });
 
   return (
-    <Textarea
-      width={width}
-      maxW={maxW}
-      border="1px solid #C3CAD6"
-      {...field}
-      value={field.value || ""}
-      disabled={disabled}
-      placeholder={placeholder}
-    />
+    <FormControl isInvalid={!!error} width={width} maxW={maxW} pos="relative">
+      {label && <FormLabel>{label}</FormLabel>}
+      <Textarea
+        {...field}
+        value={field.value || ""}
+        disabled={disabled}
+        placeholder={placeholder}
+        border="1px solid"
+        borderColor="#C3CAD6"
+      />
+      {error && <FormErrorMessage pos="absolute">{error}</FormErrorMessage>}
+    </FormControl>
   );
 };
