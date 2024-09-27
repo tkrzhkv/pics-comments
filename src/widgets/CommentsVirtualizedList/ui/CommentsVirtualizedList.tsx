@@ -1,5 +1,5 @@
-import { forwardRef, useRef } from "react";
-import { Box, Spinner, Text, useToast, Center } from "@chakra-ui/react";
+import React, { forwardRef, useEffect, useRef } from "react";
+import { Box, Center, Spinner, Text, useToast } from "@chakra-ui/react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { removeScrollBarStyles } from "@/shared/utils/removeScrollBarStyles.ts";
 import { InfinityQueryResultType } from "@/shared/types/comments/getCommentsTypes.ts";
@@ -9,6 +9,9 @@ import { handleMutationError } from "@/shared/utils/handleMutationError.ts";
 import { useConfirmation } from "@/shared/hooks/useConfirmation.ts";
 import { ConfirmationModal } from "@/shared/ui/confirm-modal";
 import { FullSizeSpinner } from "@/shared/ui/spinner";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/app/appStore.ts";
+import { setScrollPosition } from "@/features/comment/persistedScroll/model/scrollSlice.ts";
 
 type CommentsVirtualizedListProps = {
   comments: InfinityQueryResultType | undefined;
@@ -23,8 +26,24 @@ export const CommentsVirtualizedList = forwardRef<
 >(({ comments, isFetchingNextPage, hasNextPage, isLoading }, ref) => {
   const parentRef = useRef<HTMLDivElement>(null);
   const toast = useToast();
+  const dispatch = useDispatch();
+
+  const scrollPosition = useSelector(
+    (state: RootState) => state.scroll.scrollPosition,
+  );
+
+  const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
+    const scrollTop = event.currentTarget.scrollTop;
+    dispatch(setScrollPosition(scrollTop));
+  };
 
   const allComments = comments?.pages.flatMap((page) => page.comments) || [];
+
+  useEffect(() => {
+    if (parentRef.current) {
+      parentRef.current.scrollTop = scrollPosition;
+    }
+  }, [scrollPosition]);
 
   const { mutate: removeComment } = useDeleteComment();
 
@@ -43,6 +62,12 @@ export const CommentsVirtualizedList = forwardRef<
     gap: 10,
   });
 
+  useEffect(() => {
+    if (parentRef.current) {
+      parentRef.current.scrollTop = scrollPosition ?? 0;
+    }
+  }, [scrollPosition, comments]);
+
   return (
     <Box
       ref={parentRef}
@@ -54,6 +79,7 @@ export const CommentsVirtualizedList = forwardRef<
       boxShadow="md"
       css={removeScrollBarStyles}
       p={4}
+      onScroll={handleScroll}
     >
       {!isLoading ? (
         <Box
@@ -67,12 +93,12 @@ export const CommentsVirtualizedList = forwardRef<
             const comment = allComments[virtualRow.index];
 
             return (
-                <CommentCard
-                    key={virtualRow.key}
-                    comment={comment}
-                    virtualRow={virtualRow}
-                    removeComment={deleteConfirmation.handleOpen}
-                />
+              <CommentCard
+                key={virtualRow.key}
+                comment={comment}
+                virtualRow={virtualRow}
+                removeComment={deleteConfirmation.handleOpen}
+              />
             );
           })}
         </Box>
