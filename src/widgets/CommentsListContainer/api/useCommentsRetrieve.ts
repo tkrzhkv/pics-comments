@@ -2,19 +2,8 @@ import {
   useInfiniteQuery,
   UseInfiniteQueryResult,
 } from "@tanstack/react-query";
-import axios from "axios";
-import {
-  CommentsResponse,
-  InfinityQueryResultType,
-} from "@/shared/types/comments/getCommentsTypes.ts";
-
-const getComments = async ({ pageParam = 0 }): Promise<CommentsResponse> => {
-  const limit = 30;
-  const response = await axios.get(
-    `https://dummyjson.com/comments?skip=${pageParam}&limit=${limit}`,
-  );
-  return response.data;
-};
+import { InfinityQueryResultType } from "@/shared/types/comments/getCommentsTypes.ts";
+import { getComments } from "@/widgets/CommentsListContainer/api/getComment.ts";
 
 export const useInfiniteCommentsRetrieve = (): UseInfiniteQueryResult<
   InfinityQueryResultType,
@@ -35,7 +24,7 @@ export const useInfiniteCommentsRetrieve = (): UseInfiniteQueryResult<
           comments: [],
           total: 0,
           skip: 0,
-          limit: 30,
+          limit: 200,
         },
       ],
       pageParams: [],

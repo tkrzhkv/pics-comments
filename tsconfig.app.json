@@ -14,7 +14,7 @@
     "moduleDetection": "force",
     "noEmit": true,
     "baseUrl": ".",
-    "types": ["vitest/globals"],
+    "types": ["vite/client", "vitest"],
     "paths": {
       "@/*": ["./src/*"]
     },
@@ -25,5 +25,7 @@
     "noFallthroughCasesInSwitch": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src", "scripts", "src/**/*.ts", "src/**/*.tsx"]
+  "typeRoots": ["node_modules/@types", "src"],
+  "include": ["src", "scripts", "src/**/*.ts", "src/**/*.tsx", "./test/setup.ts", "vitest.config.ts", "setupTests.ts"],
+
 }
