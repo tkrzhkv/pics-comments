@@ -1,5 +1,5 @@
-export type Comment = {
-  id: number;
+export type CommentResponseType = {
+  id?: number;
   body: string;
   postId: number;
   likes: number;
@@ -11,7 +11,7 @@ export type Comment = {
 };
 
 export type CommentsResponse = {
-  comments: Comment[];
+  comments: CommentResponseType[];
   total: number;
   skip: number;
   limit: number;

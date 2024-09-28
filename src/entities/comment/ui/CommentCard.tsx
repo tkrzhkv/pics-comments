@@ -1,11 +1,11 @@
 import { HStack, Text, VStack } from "@chakra-ui/react";
 import { FC } from "react";
-import { Comment } from "@/shared/types/comments/getCommentsTypes.ts";
+import { CommentResponseType } from "@/shared/types/comments/getCommentsTypes.ts";
 import { VirtualItem } from "@tanstack/react-virtual";
 import { DeleteButton } from "@/shared/ui/buttons/delete";
 
 type CommentCardProps = {
-  comment: Comment;
+  comment: CommentResponseType;
   virtualRow: VirtualItem;
   removeComment: (id: number) => void;
 };
@@ -14,6 +14,8 @@ export const CommentCard: FC<CommentCardProps> = ({
   virtualRow,
   removeComment,
 }) => {
+  const { id, user, body, likes } = comment ?? {};
+
   return (
     <HStack
       style={{
@@ -29,13 +31,13 @@ export const CommentCard: FC<CommentCardProps> = ({
       borderRadius="md"
     >
       <VStack align="start" spacing={1} width="100%">
-        <Text fontWeight="bold">{comment.user.fullName}</Text>
-        <Text>{comment.body}</Text>
-        <Text color="gray.500">Likes: {comment.likes}</Text>
+        <Text fontWeight="bold">{user?.fullName ?? ""}</Text>
+        <Text>{body}</Text>
+        <Text color="gray.500">Likes: {likes ?? "2"}</Text>
       </VStack>
       <DeleteButton
         onClick={() => {
-          removeComment(comment.id);
+          removeComment(id ?? 0);
         }}
       />
     </HStack>

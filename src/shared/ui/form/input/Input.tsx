@@ -4,7 +4,11 @@ import {
   FieldValues,
   useController,
 } from "react-hook-form";
-import { Input as ControlledInput } from "@chakra-ui/react";
+import {
+  FormControl,
+  FormLabel,
+  Input as ControlledInput,
+} from "@chakra-ui/react";
 import { ReactElement } from "react";
 
 export type InputFormProps<
@@ -15,6 +19,7 @@ export type InputFormProps<
   control: Control<TFieldValuesType>;
   type?: string;
   placeholder?: string;
+  label?: string;
 };
 
 export const Input = <
@@ -23,16 +28,19 @@ export const Input = <
 >(
   props: InputFormProps<TFieldValuesType, TNameType>,
 ): ReactElement => {
-  const { control, name, type, placeholder } = props;
+  const { control, name, type, placeholder, label } = props;
 
   const { field } = useController({ name, control });
 
   return (
-    <ControlledInput
-      {...field}
-      value={field.value || ""}
-      type={type ?? "text"}
-      placeholder={placeholder}
-    />
+    <FormControl>
+      {label && <FormLabel>{label}</FormLabel>}
+      <ControlledInput
+        {...field}
+        value={field.value || ""}
+        type={type ?? "text"}
+        placeholder={placeholder}
+      />
+    </FormControl>
   );
 };

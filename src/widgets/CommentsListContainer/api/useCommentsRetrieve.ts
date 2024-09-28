@@ -2,12 +2,15 @@ import {
   useInfiniteQuery,
   UseInfiniteQueryResult,
 } from "@tanstack/react-query";
-import { InfinityQueryResultType } from "@/shared/types/comments/getCommentsTypes.ts";
+import {
+  CommentResponseType,
+  InfinityQueryResultType,
+} from "@/shared/types/comments/getCommentsTypes.ts";
 import { getComments } from "@/widgets/CommentsListContainer/api/getComment.ts";
 
 export const useInfiniteCommentsRetrieve = (): UseInfiniteQueryResult<
   InfinityQueryResultType,
-  unknown
+  CommentResponseType
 > => {
   return useInfiniteQuery({
     queryKey: ["comments"],
