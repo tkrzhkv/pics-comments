@@ -1,10 +1,7 @@
 import axios from "axios";
+import { PostCommentData } from "@/features/comment/createComment/api/usePostComment.ts";
 
-export const postComment = async (data: {
-  body: string;
-  postId: number;
-  userId: number;
-}) => {
+export const postComment = async (data: PostCommentData) => {
   const response = await axios.post(
     "https://dummyjson.com/comments/add",
     data,
