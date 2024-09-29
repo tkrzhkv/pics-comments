@@ -18,6 +18,6 @@ export type CommentsResponse = {
 };
 
 export type InfinityQueryResultType = {
-  pageParam: number[];
+  pageParams: number[];
   pages: CommentsResponse[];
 };

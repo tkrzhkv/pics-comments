@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-interface UseConfirmationReturn {
+export interface UseConfirmationReturn {
   isOpen: boolean;
   handleOpen: (id: number) => void;
   handleCancel: () => void;

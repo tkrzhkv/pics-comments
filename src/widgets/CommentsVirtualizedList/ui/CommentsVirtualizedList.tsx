@@ -1,67 +1,85 @@
-import React, { forwardRef, useEffect, useRef } from "react";
-import { Box, Center, Text, useToast } from "@chakra-ui/react";
+import { useEffect, useRef } from "react";
+import { Box, HStack, Text } from "@chakra-ui/react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { removeScrollBarStyles } from "@/shared/utils/removeScrollBarStyles.ts";
-import { InfinityQueryResultType } from "@/shared/types/comments/getCommentsTypes.ts";
+import { CommentResponseType } from "@/shared/types/comments/getCommentsTypes.ts";
 import { CommentCard } from "@/entities/comment/ui";
-import { useConfirmation } from "@/shared/hooks/useConfirmation.ts";
-import { ConfirmationModal } from "@/shared/ui/confirm-modal";
-import { FullSizeSpinner } from "@/shared/ui/spinner";
+import { UseConfirmationReturn } from "@/shared/hooks/useConfirmation.ts";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/app/appStore.ts";
 import { setScrollPosition } from "@/features/comment/persistedScroll/model/scrollSlice.ts";
-import { deleteLocalComment } from "@/features/comment/createComment/model/commentSlice.ts";
-import { useQueryClient } from "@tanstack/react-query";
-import { selectLocalComments } from "@/features/comment/createComment/model/selectors.ts";
+import { selectScrollPosition } from "@/features/comment/persistedScroll/model/selectors.ts";
+import { useScrollToFn } from "@/shared/hooks/useScrollToFn.ts";
 
 type CommentsVirtualizedListProps = {
-  comments: InfinityQueryResultType | undefined;
+  comments: CommentResponseType[];
   hasNextPage: boolean;
   isLoading: boolean;
+  isFetching: boolean;
+  deleteConfirmation: UseConfirmationReturn;
+  fetchNextPage: VoidFunction;
+  isFetchingNextPage: boolean;
 };
 
-export const CommentsVirtualizedList = forwardRef<
-  HTMLDivElement,
-  CommentsVirtualizedListProps
->(({ comments, hasNextPage, isLoading }, ref) => {
+export const CommentsVirtualizedList = ({
+  comments,
+  hasNextPage,
+  deleteConfirmation,
+  isFetching,
+  fetchNextPage,
+  isFetchingNextPage,
+}: CommentsVirtualizedListProps) => {
   const parentRef = useRef<HTMLDivElement>(null);
-  const toast = useToast();
+  const scrollingRef = useRef<number>(0);
+
+  const scrollToFn = useScrollToFn(parentRef, scrollingRef);
+
   const dispatch = useDispatch();
-  const queryClient = useQueryClient();
-
-  const localComments = useSelector(selectLocalComments);
-  const scrollPosition = useSelector(
-    (state: RootState) => state.scroll.scrollPosition,
-  );
-
-  const allComments = [
-    ...(comments?.pages?.flatMap((page) => page.comments) || []),
-    ...localComments,
-  ].reverse();
+  const scrollPosition = useSelector(selectScrollPosition);
 
   const rowVirtualizer = useVirtualizer({
-    count: allComments.length,
+    count: hasNextPage ? comments?.length + 1 : comments?.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 90,
-    gap: 10,
-  });
-
-  const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
-    const scrollTop = event.currentTarget.scrollTop;
-    dispatch(setScrollPosition(scrollTop));
-  };
-
-  const deleteConfirmation = useConfirmation(async (id) => {
-    dispatch(deleteLocalComment(id));
-    await queryClient.invalidateQueries({ queryKey: ["comments"] });
-    toast({ status: "success", title: "Comment successfully removed" });
+    estimateSize: () => 100,
+    gap: 5,
+    scrollToFn,
   });
 
   useEffect(() => {
-    if (parentRef.current) {
-      parentRef.current.scrollTop = scrollPosition ?? 0;
+    const [lastItem] = [...rowVirtualizer.getVirtualItems()].reverse();
+
+    if (!lastItem) {
+      return;
     }
-  }, [scrollPosition, comments]);
+
+    if (
+      lastItem.index >= comments.length - 1 &&
+      hasNextPage &&
+      !isFetchingNextPage
+    ) {
+      fetchNextPage();
+    }
+  }, [
+    hasNextPage,
+    fetchNextPage,
+    comments.length,
+    isFetchingNextPage,
+    rowVirtualizer.getVirtualItems(),
+  ]);
+
+  const onScroll = () => {
+    const items = rowVirtualizer.getVirtualItems();
+    if (items[0].index === 0) {
+      dispatch(setScrollPosition(0));
+    } else {
+      dispatch(setScrollPosition(items[items.length - 2].index));
+    }
+  };
+
+  useEffect(() => {
+    if (!isFetching) {
+      rowVirtualizer.scrollToIndex(scrollPosition);
+    }
+  }, [isFetching]);
 
   return (
     <Box
@@ -74,52 +92,65 @@ export const CommentsVirtualizedList = forwardRef<
       boxShadow="md"
       css={removeScrollBarStyles}
       p={4}
-      onScroll={handleScroll}
+      onScroll={onScroll}
     >
-      {!isLoading ? (
-        <Box
-          style={{
-            height: `${rowVirtualizer.getTotalSize()}px`,
-            position: "relative",
-            width: "100%",
-          }}
-        >
-          {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-            const comment = allComments[virtualRow.index];
+      <Box
+        style={{
+          height: `${rowVirtualizer.getTotalSize()}px`,
+          width: "100%",
+          position: "relative",
+        }}
+      >
+        {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+          const isLoaderRow = virtualRow.index > comments.length - 1;
+          const comment = comments[virtualRow.index];
 
-            return (
-              <CommentCard
-                key={virtualRow.key}
-                comment={comment}
-                virtualRow={virtualRow}
-                removeComment={deleteConfirmation.handleOpen}
-              />
-            );
-          })}
-        </Box>
-      ) : (
-        <Center h="full">
-          <FullSizeSpinner />
-        </Center>
-      )}
-
-      {hasNextPage && <Box ref={ref} height="20px" />}
-
-      {!hasNextPage && (
-        <Text textAlign="center" mt={4}>
-          No more comments to load
-        </Text>
-      )}
-
-      <ConfirmationModal
-        isOpen={deleteConfirmation.isOpen}
-        onClose={deleteConfirmation.handleCancel}
-        onConfirm={deleteConfirmation.handleConfirm}
-        title="Please confirm your action"
-        message="Are you sure that you want to remove this comment?"
-        confirmButtonText="Yes, remove"
-        cancelButtonText="No, cancel"
-      />
+          return (
+            <Box key={virtualRow.index}>
+              {isLoaderRow ? (
+                hasNextPage ? (
+                  <HStack
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: `${virtualRow.size}px`,
+                      transform: `translateY(${virtualRow.start}px) `,
+                    }}
+                    p={2}
+                    borderWidth="1px"
+                    borderRadius="md"
+                    justifyContent="center"
+                  >
+                    <Text fontWeight="bold">Loading more...</Text>
+                  </HStack>
+                ) : (
+                  <Box
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: `${virtualRow.size}px`,
+                      transform: `translateY(${virtualRow.start}px)`,
+                    }}
+                  >
+                    <Text>Nothing more to load</Text>
+                  </Box>
+                )
+              ) : (
+                <CommentCard
+                  key={virtualRow.index}
+                  comment={comment}
+                  virtualRow={virtualRow}
+                  removeComment={deleteConfirmation.handleOpen}
+                />
+              )}
+            </Box>
+          );
+        })}
+      </Box>
     </Box>
   );
-});
+};
