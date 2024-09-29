@@ -7,8 +7,8 @@ export const CommentSchema = z.object({
     .refine((value) => !value || value.length >= 10, {
       message: "Minimum 10 symbols",
     })
-    .refine((value) => !value || value.length <= 200, {
-      message: "Maximum 200 symbols",
+    .refine((value) => !value || value.length <= 100, {
+      message: "Maximum 100 symbols",
     }),
 });
 

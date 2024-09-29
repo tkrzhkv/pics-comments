@@ -22,6 +22,7 @@ import {
   setEnteredComment,
 } from "@/features/comment/createComment/model/commentSlice.ts";
 import { selectEnteredComment } from "@/features/comment/createComment/model/selectors.ts";
+import { setScrollPosition } from "@/features/comment/persistedScroll/model/scrollSlice.ts";
 
 const { FormTextarea, FormSubmitButton } = createInputList<CommentSchemaType>();
 
@@ -58,6 +59,8 @@ export const CommentForm = () => {
               user: res.user,
             }),
           );
+
+          dispatch(setScrollPosition(0));
 
           await queryClient.invalidateQueries({ queryKey: ["comments"] });
           toast({

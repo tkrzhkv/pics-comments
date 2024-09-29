@@ -4,7 +4,7 @@ import axios from "axios";
 export const getComments = async ({
   pageParam = 0,
 }): Promise<CommentsResponse> => {
-  const limit = 200;
+  const limit = 500;
   const response = await axios.get(
     `https://dummyjson.com/comments?skip=${pageParam}&limit=${limit}`,
   );

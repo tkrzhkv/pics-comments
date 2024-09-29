@@ -12,6 +12,8 @@ export const useInfiniteCommentsRetrieve = (): UseInfiniteQueryResult<
   InfinityQueryResultType,
   CommentResponseType
 > => {
+  // const skip = useSelector(selectScrollPosition);
+
   return useInfiniteQuery({
     queryKey: ["comments"],
     queryFn: getComments,
@@ -22,14 +24,7 @@ export const useInfiniteCommentsRetrieve = (): UseInfiniteQueryResult<
     },
     initialPageParam: 0,
     placeholderData: {
-      pages: [
-        {
-          comments: [],
-          total: 0,
-          skip: 0,
-          limit: 200,
-        },
-      ],
+      pages: [],
       pageParams: [],
     },
   });

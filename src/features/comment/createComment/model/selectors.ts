@@ -1,7 +1,5 @@
-// commentSelectors.ts
-
 import { createSelector } from "@reduxjs/toolkit";
-import { RootState } from "@/app/appStore.ts"; // Adjust the path as necessary
+import { RootState } from "@/app/appStore.ts";
 
 const selectBase = (state: RootState) => state.comment;
 

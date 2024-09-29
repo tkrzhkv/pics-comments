@@ -1,42 +1,45 @@
-import { useInfiniteCommentsRetrieve } from "@/widgets/CommentsListContainer/api/useCommentsRetrieve.ts";
-import { useCallback, useEffect } from "react";
-import { useInView } from "react-intersection-observer";
-import { Heading, useToast, VStack } from "@chakra-ui/react";
-import { CommentsVirtualizedList } from "@/widgets/CommentsVirtualizedList";
-import { setAllComments } from "@/features/comment/createComment/model/commentSlice.ts";
-import { useDispatch, useSelector } from "react-redux";
+import {
+  deleteLocalComment,
+  setAllComments,
+} from "@/features/comment/createComment/model/commentSlice.ts";
 import { selectLocalComments } from "@/features/comment/createComment/model/selectors.ts";
+import { setSkip } from "@/features/comment/persistedScroll/model/scrollSlice.ts";
+import { useConfirmation } from "@/shared/hooks/useConfirmation.ts";
+import { ConfirmationModal } from "@/shared/ui/confirm-modal";
+import { useInfiniteCommentsRetrieve } from "@/widgets/CommentsListContainer/api/useCommentsRetrieve.ts";
+import { Heading, useToast, VStack } from "@chakra-ui/react";
+import { useEffect, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { CommentsVirtualizedList } from "@/widgets/CommentsVirtualizedList";
 
-export function CommentsListContainer() {
+export const CommentsListContainer = () => {
   const toast = useToast();
   const dispatch = useDispatch();
   const localComments = useSelector(selectLocalComments);
 
-  const { data, fetchNextPage, hasNextPage, isFetching, isLoading } =
+  const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteCommentsRetrieve();
 
-  const { ref, inView } = useInView();
-
-  const fetchNext = useCallback(() => {
-    if (hasNextPage) {
-      fetchNextPage().catch((error) => {
-        toast({ status: "error", title: error.message });
-      });
-    }
-  }, [hasNextPage, fetchNextPage, toast]);
-
   useEffect(() => {
-    if (inView) {
-      fetchNext();
-    }
-  }, [inView, fetchNext]);
-
-  useEffect(() => {
-    if (data && localComments.length === 0) {
+    if (data) {
       const allComments = data.pages.flatMap((page) => page.comments);
-      dispatch(setAllComments(allComments));
+
+      dispatch(setAllComments([...allComments, ...localComments]));
+
+      if (data.pageParams.length > 1) {
+        dispatch(setSkip(data.pageParams[data.pageParams.length - 1]));
+      }
     }
-  }, [data, localComments.length, dispatch]);
+  }, [data]);
+
+  const allRows = useMemo(() => {
+    return [...localComments].reverse();
+  }, [data, localComments]);
+
+  const deleteConfirmation = useConfirmation(async (id) => {
+    dispatch(deleteLocalComment(id));
+    toast({ status: "success", title: "Comment successfully removed" });
+  });
 
   return (
     <VStack w="full" justifyContent="center">
@@ -44,13 +47,28 @@ export function CommentsListContainer() {
         Check, write, remove your comments...
       </Heading>
 
-      <CommentsVirtualizedList
-        data-testid="comments-virtualized-list"
-        hasNextPage={hasNextPage}
-        ref={ref}
-        comments={data}
-        isLoading={isFetching || isLoading}
+      {allRows && (
+        <CommentsVirtualizedList
+          data-testid="comments-virtualized-list"
+          comments={allRows}
+          hasNextPage={hasNextPage}
+          fetchNextPage={fetchNextPage}
+          isFetchingNextPage={isFetchingNextPage}
+          deleteConfirmation={deleteConfirmation}
+          isFetching={isFetching}
+          isLoading={isFetching}
+        />
+      )}
+
+      <ConfirmationModal
+        isOpen={deleteConfirmation.isOpen}
+        onClose={deleteConfirmation.handleCancel}
+        onConfirm={deleteConfirmation.handleConfirm}
+        title="Please confirm your action"
+        message="Are you sure that you want delete comment ?"
+        confirmButtonText="Yes, delete"
+        cancelButtonText="No, cancel"
       />
     </VStack>
   );
-}
+};
