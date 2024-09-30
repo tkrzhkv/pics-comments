@@ -199,6 +199,7 @@ This document outlines the architectural decisions made for the Pics comments ap
 - Tanstack Query: For api calls
 - Tanstack Virtual: For virtualize list.
 - Vitest: For unit tests.
+- BiomeJS: in separate branch "feat/biome-js" for fastest linting and formatting.
 - pnpm: For package management.
 
 ## Key Architectural Decisions
