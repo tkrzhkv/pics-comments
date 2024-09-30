@@ -1,9 +1,9 @@
-import { AxiosError, AxiosResponse } from "axios";
+import type { AxiosError, AxiosResponse } from "axios";
 
 interface CustomErrorResponseData {
-  message: string;
+	message: string;
 }
 
 export interface ErrorType extends AxiosError<CustomErrorResponseData> {
-  response?: AxiosResponse<CustomErrorResponseData>;
+	response?: AxiosResponse<CustomErrorResponseData>;
 }

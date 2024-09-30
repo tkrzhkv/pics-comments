@@ -1,45 +1,45 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CommentResponseType } from "@/shared/types/comments/getCommentsTypes.ts";
+import type { CommentResponseType } from "@/shared/types/comments/getCommentsTypes.ts";
+import { type PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 type CommentState = {
-  enteredComment: string;
-  localComments: CommentResponseType[];
+	enteredComment: string;
+	localComments: CommentResponseType[];
 };
 
 const initialState: CommentState = {
-  enteredComment: "",
-  localComments: [],
+	enteredComment: "",
+	localComments: [],
 };
 
 const commentSlice = createSlice({
-  name: "comment",
-  initialState,
-  reducers: {
-    setEnteredComment: (state, action: PayloadAction<string>) => {
-      state.enteredComment = action.payload;
-    },
-    resetComment: (state) => {
-      state.enteredComment = "";
-    },
-    setAllComments: (state, action: PayloadAction<CommentResponseType[]>) => {
-      state.localComments = action.payload;
-    },
-    addLocalComment: (state, action: PayloadAction<CommentResponseType>) => {
-      state.localComments.push(action.payload);
-    },
-    deleteLocalComment: (state, action: PayloadAction<number>) => {
-      state.localComments = state.localComments.filter(
-        (comment) => comment.id !== action.payload,
-      );
-    },
-  },
+	name: "comment",
+	initialState,
+	reducers: {
+		setEnteredComment: (state, action: PayloadAction<string>) => {
+			state.enteredComment = action.payload;
+		},
+		resetComment: (state) => {
+			state.enteredComment = "";
+		},
+		setAllComments: (state, action: PayloadAction<CommentResponseType[]>) => {
+			state.localComments = action.payload;
+		},
+		addLocalComment: (state, action: PayloadAction<CommentResponseType>) => {
+			state.localComments.push(action.payload);
+		},
+		deleteLocalComment: (state, action: PayloadAction<number>) => {
+			state.localComments = state.localComments.filter(
+				(comment) => comment.id !== action.payload,
+			);
+		},
+	},
 });
 
 export const {
-  setEnteredComment,
-  resetComment,
-  setAllComments,
-  addLocalComment,
-  deleteLocalComment,
+	setEnteredComment,
+	resetComment,
+	setAllComments,
+	addLocalComment,
+	deleteLocalComment,
 } = commentSlice.actions;
 export default commentSlice.reducer;
