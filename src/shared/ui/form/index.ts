@@ -1,14 +1,17 @@
-import { FC } from "react";
+import type { FC } from "react";
 
-import { FieldValues } from "react-hook-form";
-import { Input, InputFormProps } from "@/shared/ui/form/input";
-import { FormTextarea, TextAreaFormProps } from "@/shared/ui/form/textarea";
+import { Input, type InputFormProps } from "@/shared/ui/form/input";
 import FormSubmitButton, {
-  FormSubmitButtonProps,
+	type FormSubmitButtonProps,
 } from "@/shared/ui/form/submit-button/SubmitButton.tsx";
+import {
+	FormTextarea,
+	type TextAreaFormProps,
+} from "@/shared/ui/form/textarea";
+import type { FieldValues } from "react-hook-form";
 
 export const createInputList = <FV extends FieldValues>() => ({
-  FormInput: Input as FC<InputFormProps<FV>>,
-  FormTextarea: FormTextarea as FC<TextAreaFormProps<FV>>,
-  FormSubmitButton: FormSubmitButton as FC<FormSubmitButtonProps<FV>>,
+	FormInput: Input as FC<InputFormProps<FV>>,
+	FormTextarea: FormTextarea as FC<TextAreaFormProps<FV>>,
+	FormSubmitButton: FormSubmitButton as FC<FormSubmitButtonProps<FV>>,
 });
