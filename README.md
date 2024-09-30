@@ -12,7 +12,7 @@ Before running the project, make sure you have the following tools installed:
 - Node.js (version 19.x or higher)
 - pnpm (version 6.x or higher)
 
-## ��  Install & Use
+## Install & Use
 
 ```
 pnpm install
