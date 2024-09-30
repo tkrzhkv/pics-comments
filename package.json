@@ -11,7 +11,8 @@
     "preview": "vite preview",
     "prepare": "husky install",
     "test": "vitest",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "test:ci": "vitest run --coverage"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.8.2",

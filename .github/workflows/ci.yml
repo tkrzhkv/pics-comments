@@ -36,5 +36,5 @@ jobs:
         run: yarn install --immutable
 
       - name: Run Test
-        run: vitest run test --coverage
+        run: yarn test:ci
 
