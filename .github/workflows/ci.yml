@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install Dependencies
-        run: pnpm install --immutable
+        run: yarn install --immutable
 
       - name: Run ESLint
-        run: pnpm lint
+        run: yarn lint
