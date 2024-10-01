@@ -43,9 +43,7 @@ export const CommentsListContainer = () => {
 
   return (
     <VStack w="full" justifyContent="center">
-      <Heading color="blue.300" py={8}>
-        Check, write, remove your comments...
-      </Heading>
+      <Heading py={8}>Check, write, remove your comments...</Heading>
 
       {allRows && (
         <CommentsVirtualizedList

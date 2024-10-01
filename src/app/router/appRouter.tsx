@@ -3,7 +3,8 @@ import { SuspenseLayout } from "@/shared/ui/layouts";
 import { RouteDescription, RouteNames } from "@/shared/config/routes";
 import { NotFoundPage } from "@/pages/notFoundPage/ui";
 import { LoginPage } from "@/pages/login/ui";
-import { HomePage } from "@/pages/home/ui/HomePage.tsx";
+import { HomePage } from "@/pages/home/ui";
+import { motion } from "framer-motion";
 
 const { LOGIN, HOME } = RouteNames;
 
@@ -25,10 +26,16 @@ const routesContent = routes.map(({ path, component: Component }) => (
 export const AppRouter = () => {
   return (
     <SuspenseLayout>
-      <Routes>
-        {routesContent}
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 2 }}
+      >
+        <Routes>
+          {routesContent}
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </motion.div>
     </SuspenseLayout>
   );
 };
