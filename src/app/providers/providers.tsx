@@ -7,6 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistor, store } from "@/app/appStore.ts";
+import theme from "@/shared/theme/theme.ts";
 
 interface IProviders {
   readonly children: ReactNode;
@@ -19,7 +20,7 @@ export const Providers: FC<IProviders> = ({ children }) => {
     <ErrorBoundary FallbackComponent={Fallback}>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <ChakraProvider>
+          <ChakraProvider theme={theme}>
             <BrowserRouter>
               <QueryClientProvider client={queryClient}>
                 {children}
