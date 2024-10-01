@@ -3,6 +3,7 @@ import { FC } from "react";
 import { CommentResponseType } from "@/shared/types/comments/getCommentsTypes.ts";
 import { VirtualItem } from "@tanstack/react-virtual";
 import { DeleteButton } from "@/shared/ui/buttons/delete";
+import { FaRegHeart } from "react-icons/fa";
 
 type CommentCardProps = {
   comment: CommentResponseType;
@@ -33,7 +34,10 @@ export const CommentCard: FC<CommentCardProps> = ({
       <VStack align="start" spacing={1} width="100%">
         <Text fontWeight="bold">{user?.fullName ?? ""}</Text>
         <Text>{body}</Text>
-        <Text color="gray.500">Likes: {likes ?? "2"}</Text>
+        <HStack>
+          <FaRegHeart />
+          <Text color="gray.500">{`${likes ?? 2}`}</Text>
+        </HStack>
       </VStack>
       <DeleteButton
         onClick={() => {
